@@ -1,21 +1,22 @@
-"use strict";
-const userNew = new UserForm;
-userNew.loginFormCallback = (data, callback) => {
-    ApiConnector.login(data, callback){ 
-    if( ???????){
-      return location.reload()
-    } else{
-       return setLoginErrorMessage(message)
-    }
-   }
+"use strict"
+const newUser = new UserForm();
+
+newUser.loginFormCallback = data => ApiConnector.login(data, checkLoginFunc);
+
+function checkLoginFunc(response) {
+  if (response.success) {
+    location.reload();
+  } else {
+    newUser.setLoginErrorMessage(response.error);
+  }
 }
 
-userNew.registerFormCallback = (data, callback) => {
-    ApiConnector.register(data, callback)
-    if(??????){
-     ?????????
-    }else{
-        setRegisterErrorMessage(message)
-    }
-}
+newUser.registerFormCallback = data => ApiConnector.register(data, checkRegistryFunc);
 
+function checkRegistryFunc(response) {
+  if (response.success) {
+    location.reload();
+  } else {
+    newUser.setRegisterErrorMessage(response.error);
+  }
+}
