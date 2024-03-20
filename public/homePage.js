@@ -18,49 +18,50 @@ ApiConnector.current(response => {
         ProfileWidget.showProfile(response.data)
     }
 })
-///Напишите функцию, которая будет выполнять запрос получения курсов валют.
-function(){
+setInterval(function getCurrencyRate (){
     ApiConnector.getStocks(response => {
         if(response.success){
             newRatesBoard.clearTable()
             newRatesBoard.fillTable(response.data)
         }
     })
-}
+}, 1000)
 
 //ApiConnector.getStocks(courseRequest)()
 //setInterval(ApiConnector.getStocks(courseRequest), 60000)
 
 newMoneyManager.addMoneyCallback = data => {
     ApiConnector.addMoney(data, response => {
-        if(!response.success){
-            newMoneyManager.setMessage(response.success, "Баланс не пополнен!")
+        if(response.success){
+            ProfileWidget.showProfile(response.data)
+            newMoneyManager.setMessage(response.success, "Баланс пополнен!")
+        } else{
+            newMoneyManager.setMessage(response.success, response.error)
         }
-        ProfileWidget.showProfile(response.data)
-        newMoneyManager.setMessage(response.success, "Баланс пополнен!")
     })
 }
 
 
 newMoneyManager.conversionMoneyCallback = data => {
     ApiConnector.convertMoney(data, response => {
-        if(!response.success){
-            newMoneyManager.setMessage(response.success, "Средства не конвертированы!")
+        if(response.success){
+            ProfileWidget.showProfile(response.data);
+            newMoneyManager.setMessage(response.success, "Средства конвертированы!");
+        } else{
+            newMoneyManager.setMessage(response.success, response.error)
         }
-        ProfileWidget.showProfile(response.data)
-        newMoneyManager.setMessage(response.success, "Средства конвертированы!")
     
     })
 }
 
 newMoneyManager.sendMoneyCallback = data => {
     ApiConnector.transferMoney(data, response => {
-        if(!response.success){
-            newMoneyManager.setMessage(response.success, "Средства не переведены!")
+        if(response.success){
+            ProfileWidget.showProfile(response.data);
+            newMoneyManager.setMessage(response.success, "Средства переведены!");
+        } else{
+            newMoneyManager.setMessage(response.success, response.error);
         }
-        ProfileWidget.showProfile(response.data)
-        newMoneyManager.setMessage(response.success, "Средства переведены!")
-    
     })
 }
 
@@ -81,8 +82,9 @@ newFavoritesWidget.addUserCallback = data => {
             newFavoritesWidget.fillTable(response.data)
             newMoneyManager.updateUsersList(response.data)
             newMoneyManager.setMessage(response.success, "Пользователь добавлен в список!")    
+        } else{
+        newMoneyManager.setMessage(response.success, response.error)
         }
-        newMoneyManager.setMessage(response.success, "Пользователь не добавлен в список!") 
 
         })
 }
@@ -94,8 +96,9 @@ newFavoritesWidget.removeUserCallback = data => {
             newFavoritesWidget.fillTable(response.data)
             newMoneyManager.updateUsersList(response.data)
             newMoneyManager.setMessage(response.success, "Пользователь удален из списка!")    
+        } else{
+        newMoneyManager.setMessage(response.success, response.error)
         }
-        newMoneyManager.setMessage(response.success, "Пользователь не удален из список!") 
 
         })
 }
